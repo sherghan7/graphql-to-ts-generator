@@ -1,0 +1,52 @@
+{
+  "name": "graphql-to-ts-generator",
+  "version": "1.0.0",
+  "description": "Convert GraphQL schemas to TypeScript interfaces with CLI support",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "graphql-to-ts": "dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "npm run clean && npm run build",
+    "test": "npm run build && node dist/cli.js --help"
+  },
+  "keywords": [
+    "graphql",
+    "typescript",
+    "codegen",
+    "schema",
+    "generator",
+    "cli",
+    "types"
+  ],
+  "author": "Sher Ghan <sherghan7@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sherghan7/graphql-to-ts-generator.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sherghan7/graphql-to-ts-generator/issues"
+  },
+  "homepage": "https://github.com/sherghan7/graphql-to-ts-generator#readme",
+  "files": [
+    "dist/**/*",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "dependencies": {
+    "graphql": "^16.8.1",
+    "commander": "^11.1.0",
+    "chalk": "^4.1.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.8.0",
+    "typescript": "^5.2.2"
+  }
+}
