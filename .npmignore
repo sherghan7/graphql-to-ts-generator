@@ -1,0 +1,22 @@
+# Source files
+src/
+*.ts
+!*.d.ts
+
+# Development files
+.git/
+.gitignore
+tsconfig.json
+*.tgz
+node_modules/
+coverage/
+.nyc_output/
+*.log
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

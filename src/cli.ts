@@ -5,7 +5,6 @@ import fs from 'fs';
 import path from 'path';
 import chalk from 'chalk';
 import { convertGraphQLToTypeScript, ConversionOptions } from './converter';
-import { loadConfig, Config } from './config';
 
 const program = new Command();
 
@@ -17,7 +16,6 @@ program
 program
   .argument('[input]', 'Input GraphQL schema file path')
   .option('-o, --output <path>', 'Output TypeScript file path')
-  .option('-c, --config <path>', 'Config file path')
   .option('-w, --watch', 'Watch for file changes')
   .option('--no-comments', 'Exclude comments from generated types')
   .option('--prefix <prefix>', 'Add prefix to generated type names')
@@ -26,23 +24,21 @@ program
   .option('--custom-scalars <scalars>', 'Custom scalar type mappings (JSON format)')
   .action(async (input: string | undefined, options) => {
     try {
-      // Load config file
-      const config = loadConfig(options.config);
-
-      // Merge config with CLI options (CLI takes precedence)
       const finalOptions = {
-        input: input || config?.input,
-        output: options.output || config?.output || 'types/generated.ts',
-        watch: options.watch || config?.watch || false,
-        comments: options.comments !== false && (config?.includeComments !== false),
-        prefix: options.prefix || config?.typePrefix || '',
-        suffix: options.suffix || config?.typeSuffix || '',
-        enumsAsConst: options.enumsAsConst || config?.enumsAsConst || false,
-        customScalars: options.customScalars || config?.customScalarTypes
+        input: input,
+        output: options.output || 'types/generated.ts',
+        watch: options.watch || false,
+        comments: options.comments !== false,
+        prefix: options.prefix || '',
+        suffix: options.suffix || '',
+        enumsAsConst: options.enumsAsConst || false,
+        customScalars: options.customScalars
       };
 
       if (!finalOptions.input) {
-        throw new Error('Input file path is required. Provide it as an argument or in a config file.');
+        console.error(chalk.red('❌ Error: Input file path is required.'));
+        console.log(chalk.yellow('Usage: graphql-to-ts <input-file> [options]'));
+        process.exit(1);
       }
 
       await generateTypes(finalOptions.input, finalOptions);
@@ -51,7 +47,7 @@ program
         console.log(chalk.blue(`👀 Watching ${finalOptions.input} for changes...`));
         fs.watchFile(finalOptions.input, () => {
           console.log(chalk.yellow('📝 Schema changed, regenerating types...'));
-          generateTypes(finalOptions.input, finalOptions).catch(console.error);
+          generateTypes(finalOptions.input!, finalOptions).catch(console.error);
         });
       }
     } catch (error) {
